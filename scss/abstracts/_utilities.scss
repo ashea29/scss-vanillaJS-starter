@@ -43,6 +43,7 @@
   justify-content: space-between;
 }
 
+
 // Margin and Padding classes
 $space-amounts: (1,2,3,4,5);
 
@@ -54,17 +55,9 @@ $space-amounts: (1,2,3,4,5);
     margin-top: #{$space}rem;
     margin-bottom: #{$space}rem;
   }
-  .my-auto {
-    margin-top: auto;
-    margin-bottom: auto;
-  }
   .mx-#{$space} {
     margin-left: #{$space}rem;
     margin-right: #{$space}rem;
-  }
-  .mx-auto {
-    margin-left: auto;
-    margin-right: auto;
   }
   .ml-#{$space} {
     margin-left: #{$space}rem;
@@ -86,17 +79,9 @@ $space-amounts: (1,2,3,4,5);
     padding-top: #{$space}rem;
     padding-bottom: #{$space}rem;
   }
-  .py-auto {
-    padding-top: auto;
-    padding-bottom: auto;
-  }
   .px-#{$space} {
     padding-left: #{$space}rem;
     padding-right: #{$space}rem;
-  }
-  .px-auto {
-    padding-left: auto;
-    padding-right: auto;
   }
   .pl-#{$space} {
     padding-left: #{$space}rem;
@@ -110,4 +95,56 @@ $space-amounts: (1,2,3,4,5);
   .pb-#{$space} {
     padding-bottom: #{$space}rem;
   }
+}
+
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.mr-auto {
+  margin-right: auto;
+}
+
+.mt-auto {
+  margin-top: auto;
+}
+
+.mb-auto {
+  margin-bottom: auto;
+}
+
+.py-auto {
+  padding-top: auto;
+  padding-bottom: auto;
+}
+
+.px-auto {
+  padding-left: auto;
+  padding-right: auto;
+}
+
+.pl-auto {
+  padding-left: auto;
+}
+
+.pr-auto {
+  padding-right: auto;
+}
+
+.pt-auto {
+  padding-top: auto;
+}
+
+.pb-auto {
+  padding-bottom: auto;
 }
