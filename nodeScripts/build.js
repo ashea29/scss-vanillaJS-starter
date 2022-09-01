@@ -35,6 +35,7 @@ findFiles("./js", ".js", jsFilesArray);
 const copyAllFiles = () => {
     
     if (existsSync('./dist/')) {
+        execSync('rm -rf dist/ && mkdir ./dist')
         htmlFilesArray.forEach((file) => {
             execSync(`cp ${file} dist/`)
         })  
