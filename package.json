@@ -3,10 +3,8 @@
   "version": "1.0.0",
   "description": "SCSS Vanilla JS Starter",
   "scripts": {
-    "build": "node ./nodeScripts/build.js",
-    "sass-dev": "sass --watch --style=expanded --no-source-map scss:dist/css/styles.css",
-    "sass-prod": "sass --watch --style=compressed --no-source-map scss:dist/css/styles.css",
-    "dev": "nodemon --watch ./pages --watch ./js ./nodeScripts/build.js"
+    "build": "concurrently \"node ./nodeScripts/build.js\" \"node ./nodeScripts/compileSass -P",
+    "dev": "concurrently \"nodemon --watch ./pages --watch ./js ./nodeScripts/dev.js\" \"node ./nodeScripts/compileSass -D\""
   },
   "author": "Andrew Shea",
   "license": "GPL-3.0",
