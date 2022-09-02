@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "SCSS Vanilla JS Starter",
   "scripts": {
-    "sass-dev": "sass --watch --style=expanded --no-source-map scss:dist/css",
-    "sass-prod": "sass --watch --style=compressed --no-source-map scss:dist/css"
+    "build": "concurrently \"node ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -P",
+    "dev": "concurrently \"nodemon ./scripts/copyHTMLandJS.js --watch ./pages --watch ./js\" \"node ./scripts/compileSass.js -D\"",
+    "copyFilesTest": "node scripts/utils/copyFiles.js"
   },
   "author": "Andrew Shea",
   "license": "GPL-3.0",
-  "devDependencies": {
+  "dependencies": {
+    "commander": "latest",
+    "concurrently": "latest",
+    "live-server": "^1.1.0",
+    "nodemon": "latest",
     "sass": "^1.54.5"
   }
 }
