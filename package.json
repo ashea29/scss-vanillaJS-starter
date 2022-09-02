@@ -4,8 +4,7 @@
   "description": "SCSS Vanilla JS Starter",
   "scripts": {
     "build": "concurrently \"node ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -P",
-    "dev": "concurrently \"nodemon ./scripts/copyHTMLandJS.js --watch ./pages --watch ./js\" \"node ./scripts/compileSass.js -D\"",
-    "copyFilesTest": "node scripts/utils/copyFiles.js"
+    "dev": "concurrently \"nodemon ./scripts/copyHTMLandJS.js --watch ./pages --watch ./js\" \"node ./scripts/compileSass.js -D\""
   },
   "author": "Andrew Shea",
   "license": "GPL-3.0",

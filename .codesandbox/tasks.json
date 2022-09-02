@@ -18,10 +18,6 @@
       "name": "dev",
       "command": "yarn dev",
       "runAtStart": false
-    },
-    "test1": {
-      "name": "copyFiles test",
-      "command": "node scripts/utils/copyFiles"
     }
   }
 }
