@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@js": ["js"],
+      "@js/*": ["js/*"],
+      "@pages": ["pages"],
+      "@pages/*": ["pages/*"],
+      "@utils": ["scripts/utils"],
+      "@utils/*": ["scripts/utils/*"],
+      "@scripts": ["scripts"],
+      "@scripts/*": ["scripts/*"],
+      "@dist": ["dist/"],
+      "@dist/*": ["dist/*"]
+    }
+  }
+}
