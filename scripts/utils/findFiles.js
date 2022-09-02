@@ -8,15 +8,13 @@ const findFiles = (sourcePath, filter, outputArray = []) => {
   }
 
   const files = readdirSync(sourcePath);
-  console.log("Files (findFiles): ", files);
   for (const file of files) {
     const filename = path.join(sourcePath, file);
-    console.log("Filename (findFiles): ", filename);
     const stat = lstatSync(filename);
     if (stat.isDirectory()) {
       findFiles(filename, filter, outputArray); //recurse
     } else if (filename.endsWith(filter)) {
-      outputArray.push({name: file, filePath: filename});
+      outputArray.push(filename);
     }
   }
 };
