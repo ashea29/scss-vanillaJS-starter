@@ -12,6 +12,4 @@ findFiles(`${rootDir}/src/js`, ".js", jsFilesArray);
 findFiles("./pages", ".html", htmlFilesArray);
 findFiles("./js", ".js", jsFilesArray);
 
-// console.log(htmlFilesArray)
-
 copyFiles(htmlFilesArray, jsFilesArray);
