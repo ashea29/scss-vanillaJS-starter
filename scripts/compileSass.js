@@ -20,13 +20,16 @@ program.parse(argv);
 const options = program.opts();
 
 const pagesPath = path.resolve(rootDir, "scss/pages/");
+// console.log(pagesPath);
 const pagesArray = [];
-const sassCompileString = `sass ${
+let sassCompileString = `sass ${
   options.dev ? "--watch --style=expanded" : "--style=compressed"
 } --no-source-map`;
 
 const compileSass = () => {
   findFiles(pagesPath, ".scss", pagesArray);
+
+  //   console.log(pagesArray)
 
   if (pagesArray.length === 0) {
     const errorMsg = "No pages yet. Add some, then run the command again";
@@ -34,14 +37,19 @@ const compileSass = () => {
     exit();
   }
 
-  pagesArray.forEach((page) =>
-    sassCompileString.concat(` scss/pages/${page}:dist/css/${page}.css`)
+  pagesArray.forEach(
+    (page) =>
+      (sassCompileString += ` scss/pages/${page.name + page.ext}:dist/css/${
+        page.name
+      }.css`)
   );
 
-  execSync(sassCompileString);
   if (!options.dev) {
     exit();
   }
 };
 
 compileSass();
+// console.log("Pages array: ", pagesArray);
+// console.log("Sass compile string: ", sassCompileString);
+execSync(sassCompileString);
