@@ -4,14 +4,14 @@
   "description": "SCSS Vanilla JS Starter",
   "scripts": {
     "build": "rm -rf ./dist && concurrently \"node ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -P",
-    "dev": "rm -rf ./dist && concurrently \"nodemon ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -D \""
+    "dev": "rm -rf ./dist && concurrently \"nodemon ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -D \" \"node ./scripts/serve.js\""
   },
   "author": "Andrew Shea",
   "license": "GPL-3.0",
   "dependencies": {
     "commander": "latest",
     "concurrently": "latest",
-    "live-server": "^1.1.0",
+    "live-server": "^1.2.2",
     "nodemon": "latest",
     "sass": "^1.54.5"
   }
