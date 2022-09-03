@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "SCSS Vanilla JS Starter",
   "scripts": {
-    "build": "concurrently \"node ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -P",
-    "dev": "concurrently \"nodemon ./scripts/copyHTMLandJS.js --watch ./pages --watch ./js\" \"node ./scripts/compileSass.js -D\""
+    "build": "rm -rf ./dist && concurrently \"node ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -P",
+    "dev": "rm -rf ./dist && concurrently \"nodemon ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -D \""
   },
   "author": "Andrew Shea",
   "license": "GPL-3.0",

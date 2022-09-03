@@ -1,13 +1,11 @@
 const { findFiles } = require("./utils/findFiles");
 const { copyFiles } = require("./utils/copyFiles");
-const { rootDir } = require("./utils/directories");
+const { rootDir } = require("./utils/paths");
 
 const htmlFilesArray = [];
 const jsFilesArray = [];
 
-findFiles(`${rootDir}/pages`, ".html", htmlFilesArray);
-findFiles(`${rootDir}/js`, ".js", jsFilesArray);
-
-// console.log(htmlFilesArray)
+findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
+findFiles(`${rootDir}/src/js`, ".js", jsFilesArray);
 
 copyFiles(htmlFilesArray, jsFilesArray);
