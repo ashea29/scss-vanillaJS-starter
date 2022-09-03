@@ -9,26 +9,28 @@ const { rootDir } = require("./directories");
 const dist = path.resolve(rootDir, "dist");
 
 const copyFiles = (htmlArray = [], jsArray = []) => {
+  //   console.log("html array: ", htmlArray);
+  //   console.log("js array", jsArray);
   if (existsSync(`${dist}`)) {
     execSync(`rm -rf ${dist} && mkdir ${dist}`);
     htmlArray.forEach((file) => {
-      execSync(`cp ${file} ${dist}/`);
+      execSync(`cp ${file.path} ${dist}/`);
     });
   } else {
     execSync(`mkdir ${dist}`);
     htmlArray.forEach((file) => {
-      execSync(`cp ${file} ${dist}`);
+      execSync(`cp ${file.path} ${dist}/`);
     });
   }
 
   if (existsSync(`${dist}/js`)) {
     jsArray.forEach((file) => {
-      execSync(`cp ${file} ${dist}/js/`);
+      execSync(`cp ${file.path} ${dist}/js/`);
     });
   } else {
     execSync(`mkdir ${dist}/js`);
     jsArray.forEach((file) => {
-      execSync(`cp ${file} ${dist}/js/`);
+      execSync(`cp ${file.path} ${dist}/js/`);
     });
   }
 };
