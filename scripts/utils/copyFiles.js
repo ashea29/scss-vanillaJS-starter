@@ -20,15 +20,17 @@ const copyFiles = (htmlArray = [], jsArray = []) => {
     });
   }
 
-  if (existsSync(`${dist}${OS === "win32" ? "\\" : "/"}js`)) {
-    jsArray.forEach((file) => {
-      execSync(`cp ${file.path} ${dist}${OS === "win32" ? "\\" : "/"}js`);
-    });
-  } else {
-    execSync(`mkdir ${dist}${OS === "win32" ? "\\" : "/"}js`);
-    jsArray.forEach((file) => {
-      execSync(`cp ${file.path} ${dist}${OS === "win32" ? "\\" : "/"}js`);
-    });
+  if (jsArray.length != 0) {
+    if (existsSync(`${dist}${OS === "win32" ? "\\" : "/"}js`)) {
+      jsArray.forEach((file) => {
+        execSync(`cp ${file.path} ${dist}${OS === "win32" ? "\\" : "/"}js`);
+      });
+    } else {
+      execSync(`mkdir ${dist}${OS === "win32" ? "\\" : "/"}js`);
+      jsArray.forEach((file) => {
+        execSync(`cp ${file.path} ${dist}${OS === "win32" ? "\\" : "/"}js`);
+      });
+    }
   }
 };
 
