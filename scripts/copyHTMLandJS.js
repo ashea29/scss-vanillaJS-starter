@@ -1,17 +1,17 @@
+const { mkdir, writeFile, readFile, readdir } = require("node:fs/promises");
 const { findFiles } = require("./utils/findFiles");
 const { copyFiles } = require("./utils/copyFiles");
-
 const { rootDir } = require("./utils/paths");
 
-const htmlFilesArray = [];
-const jsFilesArray = [];
+const copyHTMLandJS = () => {
+  const htmlFilesArray = [];
+  const jsFilesArray = [];
+  const minifiedHtml = [];
+  const minfiedJS = [];
+  findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
+  findFiles(`${rootDir}/src/js`, ".js", jsFilesArray);
 
-findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
-findFiles(`${rootDir}/src/js`, ".js", jsFilesArray);
+  copyFiles(htmlFilesArray, jsFilesArray);
+};
 
-findFiles("./pages", ".html", htmlFilesArray);
-findFiles("./js", ".js", jsFilesArray);
-
-// console.log(htmlFilesArray)
-
-copyFiles(htmlFilesArray, jsFilesArray);
+export default copyHTMLandJS;
