@@ -1,5 +1,6 @@
 const path = require("path");
 const { execSync } = require("child_process");
+const { mkdir, writeFileSync, readFile, readdir } = require("node:fs");
 const { existsSync } = require("fs");
 const { platform } = require("os");
 const { rootDir } = require("./paths");
@@ -11,12 +12,22 @@ const dist = path.resolve(rootDir, "dist");
 const copyFiles = (htmlArray = [], jsArray = []) => {
   if (existsSync(`${dist}`)) {
     htmlArray.forEach((file) => {
-      execSync(`cp ${file.path} ${dist}`);
+      //   execSync(`cp ${file.path} ${dist}`);
+      writeFileSync(
+        `${dist}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
+        file.content,
+        {}
+      );
     });
   } else {
     execSync(`mkdir ${dist}`);
-    htmlArray.forEach((file) => {
-      execSync(`cp ${file.path} ${dist}`);
+    htmlArray.forEach(async (file) => {
+      //   execSync(`cp ${file.path} ${dist}`);
+      writeFileSync(
+        `${dist}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
+        file.content,
+        {}
+      );
     });
   }
 
