@@ -9,10 +9,12 @@
   "author": "Andrew Shea",
   "license": "GPL-3.0",
   "dependencies": {
+    "@minify-html/node": "^0.10.0",
     "commander": "latest",
     "concurrently": "latest",
     "live-server": "^1.2.2",
     "nodemon": "latest",
-    "sass": "^1.54.5"
+    "sass": "^1.54.5",
+    "uglify-js": "^3.17.1"
   }
 }
