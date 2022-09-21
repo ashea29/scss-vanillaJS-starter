@@ -26,6 +26,7 @@ const copyHTMLandJS = async () => {
       do_not_minify_doctype: true,
       ensure_spec_compliant_unquoted_attribute_values: true,
       keep_spaces_between_attributes: true,
+      keep_closing_tags: true,
     });
     // console.log("Minfied Contents: ", minifiedContents.toString());
     minifiedHtmlArray.push({
