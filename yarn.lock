@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@minify-html/node@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@minify-html/node/-/node-0.10.0.tgz#455b9dcb74880861468403bc132448863606a414"
+  integrity sha512-qbTIPTrHEeFJ52bXvFxKFkY5NGir0vWrT4jri5DIo6awQJX1gK5m5ST4l2Z7SK94HrhjHhg6GZoDbS0nK2VW0w==
+  dependencies:
+    cargo-cp-artifact "^0.1"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -187,6 +194,11 @@ cache-base@^1.0.1:
     to-object-path "^0.3.0"
     union-value "^1.0.0"
     unset-value "^1.0.0"
+
+cargo-cp-artifact@^0.1:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/cargo-cp-artifact/-/cargo-cp-artifact-0.1.6.tgz#df1bc9dad036ae0f4230639a869182e1d5850f89"
+  integrity sha512-CQw0doK/aaF7j041666XzuilHxqMxaKkn+I5vmBsd8SAwS0cO5CqVEVp0xJwOKstyqWZ6WK4Ww3O6p26x/Goyg==
 
 chalk@^4.1.0:
   version "4.1.2"
@@ -1520,6 +1532,11 @@ tslib@^2.1.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
+
+uglify-js@^3.17.1:
+  version "3.17.1"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.17.1.tgz#1258a2a488147a8266b3034499ce6959978ba7f4"
+  integrity sha512-+juFBsLLw7AqMaqJ0GFvlsGZwdQfI2ooKQB39PSBgMnMakcFosi9O8jCwE+2/2nMNcc0z63r9mwjoDG8zr+q0Q==
 
 undefsafe@^2.0.5:
   version "2.0.5"
