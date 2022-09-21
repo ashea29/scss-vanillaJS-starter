@@ -11,9 +11,9 @@ const { exit } = require("node:process");
 // program.parse(argv);
 // const options = program.opts();
 
-const compileSass = (devOption) => {
+const compileSass = (devBuild) => {
   const sassCompileString = `sass ${
-    devOption ? "--watch --style=expanded" : "--style=compressed"
+    devBuild ? "--watch --style=expanded" : "--style=compressed"
   } --no-source-map src/scss/globalStyles.scss:dist/css/globalStyles.css src/scss/pages/:dist/css/`;
   execSync(sassCompileString);
   if (devOption !== true) {
