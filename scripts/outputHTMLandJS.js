@@ -4,12 +4,12 @@ const { mkdir, writeFile, readFileSync, readdir } = require("node:fs");
 const { Buffer } = require("node:buffer");
 const { platform } = require("os");
 const { findFiles } = require("./utils/findFiles");
-const { copyFiles } = require("./utils/copyFiles");
+const { outputFiles } = require("./utils/outputFiles");
 const { rootDir } = require("./utils/paths");
 
 const distPath = path.resolve(rootDir, "dist");
 
-const copyHTMLandJS = async () => {
+const outputHTMLandJS = async () => {
   const htmlFilesArray = [];
   const jsFilesArray = [];
   const minifiedHtmlArray = [];
@@ -38,9 +38,11 @@ const copyHTMLandJS = async () => {
     // console.log("Minfied Array: ", minifiedHtmlArray);
   });
 
-  copyFiles(minifiedHtmlArray, jsFilesArray);
+  outputFiles(minifiedHtmlArray, jsFilesArray);
 };
 
-// export default copyHTMLandJS;
+// module.exports ={
+//     outputHTMLandJS
+// }
 
-copyHTMLandJS();
+outputHTMLandJS();

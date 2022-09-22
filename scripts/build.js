@@ -1,8 +1,7 @@
-const { execSync } = require("child_process");
-const { exit, argv } = require("node:process");
+const { argv } = require("node:process");
 const { Command } = require("commander");
-const compileSass = require("./compileSass");
-const copyHTMLandJS = require("./copyHTMLandJS");
+const { compileSass } = require("./compileSass");
+const { outputHTMLandJS } = require("./outputHTMLandJS");
 
 const program = new Command();
 
@@ -14,4 +13,4 @@ program.parse(argv);
 const options = program.opts();
 
 compileSass(options.dev);
-copyHTMLandJS();
+outputHTMLandJS();
