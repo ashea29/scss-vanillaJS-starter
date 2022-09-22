@@ -9,7 +9,7 @@ const OS = platform();
 
 const dist = path.resolve(rootDir, "dist");
 
-const copyFiles = (htmlArray = [], jsArray = []) => {
+const outputFiles = (htmlArray = [], jsArray = []) => {
   if (existsSync(`${dist}`)) {
     htmlArray.forEach((file) => {
       //   execSync(`cp ${file.path} ${dist}`);
@@ -46,5 +46,5 @@ const copyFiles = (htmlArray = [], jsArray = []) => {
 };
 
 module.exports = {
-  copyFiles,
+  outputFiles,
 };

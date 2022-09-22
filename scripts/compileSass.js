@@ -16,10 +16,12 @@ const compileSass = (devBuild) => {
     devBuild ? "--watch --style=expanded" : "--style=compressed"
   } --no-source-map src/scss/globalStyles.scss:dist/css/globalStyles.css src/scss/pages/:dist/css/`;
   execSync(sassCompileString);
-  if (devOption !== true) {
+  if (devBuild !== true) {
     exit();
   }
 };
 
 // compileSass();
-export default compileSass;
+module.exports = {
+  compileSass,
+};

@@ -4,6 +4,7 @@
   "description": "SCSS Vanilla JS Starter",
   "scripts": {
     "build": "rm -rf ./dist && concurrently \"node ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -P",
+    "build-alt": "rm -rf ./dist && node ./scripts/build.js -P",
     "dev": "rm -rf ./dist && concurrently \"nodemon ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -D \" \"node ./scripts/serve.js\""
   },
   "author": "Andrew Shea",
