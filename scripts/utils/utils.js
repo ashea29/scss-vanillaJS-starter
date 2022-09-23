@@ -69,33 +69,34 @@ const jsFilesArray = [];
 const minifiedHtmlArray = [];
 const minifiedJSArray = [];
 
-const outputHTMLandJS = async () => {
+const outputHTMLandJS = () => {
   findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
   findFiles(`${rootDir}/src/js`, ".js", jsFilesArray);
 
-  //   console.log("HTML Files Array: ", htmlFilesArray);
+  console.log("HTML Files Array: ", htmlFilesArray);
 
   htmlFilesArray.forEach((file) => {
     const fileContents = readFileSync(file.path);
-    // console.log("File Contents: ", fileContents.toString());
+    console.log("File Contents: ", fileContents.toString());
     const minifiedContents = minifyHtml.minify(fileContents, {
       do_not_minify_doctype: true,
       ensure_spec_compliant_unquoted_attribute_values: true,
       keep_spaces_between_attributes: true,
       keep_closing_tags: true,
     });
-    // console.log("Minfied Contents: ", minifiedContents.toString());
+    console.log("Minfied Contents: ", minifiedContents.toString());
     minifiedHtmlArray.push({
       name: file.name,
       ext: file.ext,
       destinationPath: distPath,
       content: minifiedContents,
     });
-    // console.log("Minfied Array: ", minifiedHtmlArray);
+    console.log("Minfied Array: ", minifiedHtmlArray);
   });
 
   jsFilesArray.forEach((file) => {
     const fileContents = readFileSync(file.path);
+    console.log(fileContents.toString());
 
     const minifiedContents = UglifyJS.minify(fileContents);
 
