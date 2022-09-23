@@ -9,7 +9,7 @@ const { rootDir } = require("./utils/paths");
 
 const distPath = path.resolve(rootDir, "dist");
 
-const outputHTMLandJS = async () => {
+const outputHTMLandJS = () => {
   const htmlFilesArray = [];
   const jsFilesArray = [];
   const minifiedHtmlArray = [];
@@ -41,8 +41,8 @@ const outputHTMLandJS = async () => {
   outputFiles(minifiedHtmlArray, jsFilesArray);
 };
 
-// module.exports ={
-//     outputHTMLandJS
-// }
+module.exports = {
+  outputHTMLandJS,
+};
 
-outputHTMLandJS();
+// outputHTMLandJS();

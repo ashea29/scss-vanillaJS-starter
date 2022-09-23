@@ -9,6 +9,7 @@ const {
 const { exit } = require("node:process");
 const { rootDir, distPath, htmlPath, jsPath, cssPath } = require("./paths");
 const minifyHtml = require("@minify-html/node");
+const UglifyJS = require("uglify-js");
 
 const findFiles = (sourcePath, filter, outputArray = []) => {
   if (!existsSync(sourcePath)) {
@@ -33,9 +34,12 @@ const findFiles = (sourcePath, filter, outputArray = []) => {
 };
 
 const outputFiles = (htmlArray = [], jsArray = []) => {
+  console.log(distPath);
+  console.log(htmlPath);
+  console.log(jsPath);
   if (existsSync(`${distPath}`)) {
     htmlArray.forEach((file) => {
-      writeFileSync(htmlPath, file.content, {});
+      writeFileSync(`${htmlPath}`, file.content, {});
     });
   } else {
     execSync(`mkdir ${distPath}`);
@@ -45,17 +49,65 @@ const outputFiles = (htmlArray = [], jsArray = []) => {
   }
 
   if (jsArray.length != 0) {
-    if (existsSync(`${distPath}${OS === "win32" ? "\\" : "/"}js`)) {
+    if (existsSync(`${jsPath}`)) {
       jsArray.forEach((file) => {
-        execSync(`cp ${file.path} ${dist}${OS === "win32" ? "\\" : "/"}js`);
+        // execSync(`cp ${file.path} ${dist}${OS === "win32" ? "\\" : "/"}js`);
+        writeFileSync(`${jsPath}${file.name}${file.ext}`, file.content, {});
       });
     } else {
-      execSync(`mkdir ${dist}${OS === "win32" ? "\\" : "/"}js`);
+      execSync(`${jsPath}`);
       jsArray.forEach((file) => {
-        execSync(`cp ${file.path} ${dist}${OS === "win32" ? "\\" : "/"}js`);
+        // execSync(`cp ${file.path} ${dist}${OS === "win32" ? "\\" : "/"}js`);
+        writeFileSync(`${jsPath}${file.name}${file.ext}`, file.content, {});
       });
     }
   }
+};
+
+const htmlFilesArray = [];
+const jsFilesArray = [];
+const minifiedHtmlArray = [];
+const minifiedJSArray = [];
+
+const outputHTMLandJS = async () => {
+  findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
+  findFiles(`${rootDir}/src/js`, ".js", jsFilesArray);
+
+  //   console.log("HTML Files Array: ", htmlFilesArray);
+
+  htmlFilesArray.forEach((file) => {
+    const fileContents = readFileSync(file.path);
+    // console.log("File Contents: ", fileContents.toString());
+    const minifiedContents = minifyHtml.minify(fileContents, {
+      do_not_minify_doctype: true,
+      ensure_spec_compliant_unquoted_attribute_values: true,
+      keep_spaces_between_attributes: true,
+      keep_closing_tags: true,
+    });
+    // console.log("Minfied Contents: ", minifiedContents.toString());
+    minifiedHtmlArray.push({
+      name: file.name,
+      ext: file.ext,
+      destinationPath: distPath,
+      content: minifiedContents,
+    });
+    // console.log("Minfied Array: ", minifiedHtmlArray);
+  });
+
+  jsFilesArray.forEach((file) => {
+    const fileContents = readFileSync(file.path);
+
+    const minifiedContents = UglifyJS.minify(fileContents);
+
+    minifiedJSArray.push({
+      name: file.name,
+      ext: file.ext,
+      destinationPath: distPath,
+      content: minifiedContents,
+    });
+  });
+
+  outputFiles(minifiedHtmlArray, minifiedJSArray);
 };
 
 const compileSass = (devBuild) => {
@@ -66,4 +118,9 @@ const compileSass = (devBuild) => {
   if (devBuild !== true) {
     exit();
   }
+};
+
+module.exports = {
+  outputHTMLandJS,
+  compileSass,
 };
