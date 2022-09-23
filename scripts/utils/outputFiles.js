@@ -12,7 +12,6 @@ const dist = path.resolve(rootDir, "dist");
 const outputFiles = (htmlArray = [], jsArray = []) => {
   if (existsSync(`${dist}`)) {
     htmlArray.forEach((file) => {
-      //   execSync(`cp ${file.path} ${dist}`);
       writeFileSync(
         `${dist}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
         file.content,
@@ -22,7 +21,6 @@ const outputFiles = (htmlArray = [], jsArray = []) => {
   } else {
     execSync(`mkdir ${dist}`);
     htmlArray.forEach(async (file) => {
-      //   execSync(`cp ${file.path} ${dist}`);
       writeFileSync(
         `${dist}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
         file.content,
