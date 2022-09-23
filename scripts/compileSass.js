@@ -11,6 +11,8 @@ const compileSass = (devBuild) => {
   }
 };
 
-module.exports = {
-  compileSass,
-};
+// module.exports = {
+//   compileSass,
+// };
+
+compileSass();

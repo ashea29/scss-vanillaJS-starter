@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "SCSS Vanilla JS Starter",
   "scripts": {
-    "build": "rm -rf ./dist && concurrently \"node ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -P",
+    "build": "rm -rf ./dist && concurrently \"node ./scripts/outputHTMLandJS.js\" \"node ./scripts/compileSass.js -P \"",
     "build-alt": "rm -rf ./dist && node ./scripts/build.js -P",
-    "dev": "rm -rf ./dist && concurrently \"nodemon ./scripts/copyHTMLandJS.js\" \"node ./scripts/compileSass.js -D \" \"node ./scripts/serve.js\""
+    "dev": "rm -rf ./dist && concurrently \"nodemon ./scripts/outputHTMLandJS.js\" \"node ./scripts/compileSass.js -D \" \"node ./scripts/serve.js\""
   },
   "author": "Andrew Shea",
   "license": "GPL-3.0",
@@ -15,7 +15,7 @@
     "concurrently": "latest",
     "live-server": "^1.2.2",
     "nodemon": "latest",
-    "sass": "^1.54.5",
+    "sass": "^1.55.0",
     "uglify-js": "^3.17.1"
   }
 }
