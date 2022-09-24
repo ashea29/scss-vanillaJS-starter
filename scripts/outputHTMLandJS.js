@@ -6,11 +6,11 @@ const { Buffer } = require("node:buffer");
 const { platform } = require("os");
 const { findFiles } = require("./utils/findFiles");
 const { outputFiles } = require("./utils/outputFiles");
-const { rootDir, jsPath } = require("./utils/paths");
+const { rootDir, jsPath, distPath } = require("./utils/paths");
 
-const distPath = path.resolve(rootDir, "dist");
+// const distPath = path.resolve(rootDir, "dist");
 
-console.log(jsPath);
+// console.log(jsPath);
 
 const outputHTMLandJS = () => {
   const htmlFilesArray = [];
@@ -20,7 +20,9 @@ const outputHTMLandJS = () => {
   findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
   findFiles(`${rootDir}/src/js`, ".js", jsFilesArray);
 
-  //   console.log("HTML Files Array: ", htmlFilesArray);
+  // console.log('JS Path', jsPath)
+  // console.log("HTML Files Array: ", htmlFilesArray);
+  // console.log("JS Files Array: ", jsFilesArray);
 
   htmlFilesArray.forEach((file) => {
     const fileContents = readFileSync(file.path);
@@ -50,15 +52,15 @@ const outputHTMLandJS = () => {
     minifiedJSArray.push({
       name: file.name,
       ext: file.ext,
-      destinationPath: distPath,
+      destinationPath: jsPath,
       content: minifiedContents.code,
     });
   });
-  console.log(minifiedJSArray);
+  // console.log(minifiedJSArray);
   outputFiles(minifiedHtmlArray, minifiedJSArray);
 };
 
-// module.exports = {
-//   outputHTMLandJS,
-// };
-outputHTMLandJS();
+module.exports = {
+  outputHTMLandJS,
+};
+// outputHTMLandJS();
