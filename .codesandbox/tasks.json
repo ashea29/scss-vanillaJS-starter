@@ -23,10 +23,6 @@
       "name": "dev",
       "command": "yarn dev",
       "runAtStart": false
-    },
-    "build-alt": {
-      "name": "build-alt",
-      "command": "yarn build-alt"
     }
   }
 }
