@@ -17,5 +17,8 @@
     "nodemon": "latest",
     "sass": "latest",
     "uglify-js": "latest"
+  },
+  "devDependencies": {
+    "glob-parent": "^6.0.2"
   }
 }
