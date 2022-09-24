@@ -22,7 +22,7 @@
     "dev": {
       "name": "dev",
       "command": "yarn dev",
-      "runAtStart": false
+      "runAtStart": true
     }
   }
 }
