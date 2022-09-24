@@ -1,12 +1,10 @@
-const { execSync } = require("child_process");
-const { exit, argv } = require("node:process");
-const { Command } = require("commander");
+const liveServer = require("live-server")
+const { rootDir } = require('./utils/paths')
 
-const program = new Command();
+const serverParams = {
+  port: 3000,
+  root: `${rootDir}/dist`,
+  open: true
+}
 
-program
-  .option("-D, --dev", "Compile for development")
-  .option("-P, --prod", "Compile for production");
-
-program.parse(argv);
-const options = program.opts();
+liveServer.start(serverParams)
