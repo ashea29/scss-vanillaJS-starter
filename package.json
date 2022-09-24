@@ -18,6 +18,6 @@
     "uglify-js": "latest"
   },
   "devDependencies": {
-    "glob-parent": "^6.0.2"
+    "chokidar": "^3.5.3"
   }
 }
