@@ -1,19 +1,22 @@
 const path = require("path");
 const minifyHtml = require("@minify-html/node");
+const UglifyJS = require("uglify-js");
 const { mkdir, writeFile, readFileSync, readdir } = require("node:fs");
 const { Buffer } = require("node:buffer");
 const { platform } = require("os");
 const { findFiles } = require("./utils/findFiles");
-const { copyFiles } = require("./utils/copyFiles");
-const { rootDir } = require("./utils/paths");
+const { outputFiles } = require("./utils/outputFiles");
+const { rootDir, jsPath } = require("./utils/paths");
 
 const distPath = path.resolve(rootDir, "dist");
 
-const copyHTMLandJS = async () => {
+console.log(jsPath);
+
+const outputHTMLandJS = () => {
   const htmlFilesArray = [];
   const jsFilesArray = [];
   const minifiedHtmlArray = [];
-  const minfiedJS = [];
+  const minifiedJSArray = [];
   findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
   findFiles(`${rootDir}/src/js`, ".js", jsFilesArray);
 
@@ -38,9 +41,24 @@ const copyHTMLandJS = async () => {
     // console.log("Minfied Array: ", minifiedHtmlArray);
   });
 
-  copyFiles(minifiedHtmlArray, jsFilesArray);
+  jsFilesArray.forEach((file) => {
+    const fileContents = readFileSync(file.path);
+
+    const minifiedContents = UglifyJS.minify(fileContents.toString());
+    // console.log(minifiedContents);
+
+    minifiedJSArray.push({
+      name: file.name,
+      ext: file.ext,
+      destinationPath: distPath,
+      content: minifiedContents.code,
+    });
+  });
+  console.log(minifiedJSArray);
+  outputFiles(minifiedHtmlArray, minifiedJSArray);
 };
 
-// export default copyHTMLandJS;
-
-copyHTMLandJS();
+// module.exports = {
+//   outputHTMLandJS,
+// };
+outputHTMLandJS();
