@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "SCSS Vanilla JS Starter",
   "scripts": {
-    "build": "rm -rf ./dist && concurrently \"node ./scripts/outputHTMLandJS.js\" \"node ./scripts/compileSass.js -P \"",
-    "build-alt": "rm -rf ./dist && node ./scripts/build.js -P",
-    "dev": "rm -rf ./dist && concurrently \"nodemon ./scripts/outputHTMLandJS.js\" \"node ./scripts/compileSass.js -D \" \"node ./scripts/serve.js\""
+    "build": "rm -rf ./dist && node ./scripts/build.js -P",
+    "dev": "rm -rf ./dist && node ./scripts/build.js -D"
   },
   "author": "Andrew Shea",
   "license": "GPL-3.0",

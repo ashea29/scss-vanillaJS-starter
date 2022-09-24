@@ -6,7 +6,6 @@ const {
   readFileSync,
   writeFileSync,
 } = require("node:fs");
-const { exit } = require("node:process");
 const { platform } = require("os");
 const { rootDir, distPath, htmlPath, jsPath, cssPath, scssPath } = require("./paths");
 const minifyHtml = require("@minify-html/node");
@@ -112,11 +111,9 @@ const outputHTMLandJS = () => {
   outputFiles(minifiedHtmlArray, minifiedJSArray);
 };
 
-const compileSass = (devBuild) => {
+const compileSass = () => {
   const sassCompileString = `
-    sass ${
-      devBuild ? "--watch --style=expanded" : "--style=compressed"
-    } --no-source-map ${
+    sass --style=compressed --no-source-map ${
       path.resolve(scssPath, 'globalStyles.scss')
     }:${
       path.resolve(cssPath, 'globalStyles.css')
@@ -126,13 +123,12 @@ const compileSass = (devBuild) => {
       path.resolve(cssPath)
     }`.trim();
   execSync(sassCompileString);
-  if (devBuild !== true) {
-    exit();
-  }
 };
 
 
 module.exports = {
   outputHTMLandJS,
   compileSass,
+  findFiles,
+  outputFiles
 };
