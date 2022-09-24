@@ -10,12 +10,12 @@
   "author": "Andrew Shea",
   "license": "GPL-3.0",
   "dependencies": {
-    "@minify-html/node": "^0.10.0",
+    "@minify-html/node": "latest",
     "commander": "latest",
     "concurrently": "latest",
-    "live-server": "^1.2.2",
+    "live-server": "latest",
     "nodemon": "latest",
-    "sass": "^1.55.0",
-    "uglify-js": "^3.17.1"
+    "sass": "latest",
+    "uglify-js": "latest"
   }
 }

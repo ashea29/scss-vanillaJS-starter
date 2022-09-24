@@ -7,9 +7,12 @@ const {
   writeFileSync,
 } = require("node:fs");
 const { exit } = require("node:process");
-const { rootDir, distPath, htmlPath, jsPath, cssPath } = require("./paths");
+const { platform } = require("os");
+const { rootDir, distPath, htmlPath, jsPath, cssPath, scssPath } = require("./paths");
 const minifyHtml = require("@minify-html/node");
 const UglifyJS = require("uglify-js");
+
+const OS = platform()
 
 const findFiles = (sourcePath, filter, outputArray = []) => {
   if (!existsSync(sourcePath)) {
@@ -34,77 +37,75 @@ const findFiles = (sourcePath, filter, outputArray = []) => {
 };
 
 const outputFiles = (htmlArray = [], jsArray = []) => {
-  console.log(distPath);
-  console.log(htmlPath);
-  console.log(jsPath);
-  if (existsSync(`${distPath}`)) {
+  if (existsSync(`${htmlPath}`)) {
     htmlArray.forEach((file) => {
-      writeFileSync(`${htmlPath}`, file.content, {});
+      writeFileSync(
+        `${htmlPath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
+        file.content,
+        {}
+      );
     });
   } else {
-    execSync(`mkdir ${distPath}`);
+    execSync(`mkdir ${htmlPath}`);
     htmlArray.forEach(async (file) => {
-      writeFileSync(`${htmlPath}${file.name}${file.ext}`, file.content, {});
+      writeFileSync(
+        `${htmlPath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
+        file.content,
+        {}
+      );
     });
   }
 
   if (jsArray.length != 0) {
     if (existsSync(`${jsPath}`)) {
       jsArray.forEach((file) => {
-        // execSync(`cp ${file.path} ${dist}${OS === "win32" ? "\\" : "/"}js`);
-        writeFileSync(`${jsPath}${file.name}${file.ext}`, file.content, {});
+        writeFileSync(`${jsPath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`, file.content, {});
       });
     } else {
-      execSync(`${jsPath}`);
+      execSync(`mkdir ${jsPath}`);
       jsArray.forEach((file) => {
-        // execSync(`cp ${file.path} ${dist}${OS === "win32" ? "\\" : "/"}js`);
-        writeFileSync(`${jsPath}${file.name}${file.ext}`, file.content, {});
+        writeFileSync(`${jsPath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`, file.content, {});
       });
     }
   }
 };
 
-const htmlFilesArray = [];
-const jsFilesArray = [];
-const minifiedHtmlArray = [];
-const minifiedJSArray = [];
-
 const outputHTMLandJS = () => {
+  const htmlFilesArray = [];
+  const jsFilesArray = [];
+  const minifiedHtmlArray = [];
+  const minifiedJSArray = [];
   findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
   findFiles(`${rootDir}/src/js`, ".js", jsFilesArray);
 
-  console.log("HTML Files Array: ", htmlFilesArray);
-
   htmlFilesArray.forEach((file) => {
     const fileContents = readFileSync(file.path);
-    console.log("File Contents: ", fileContents.toString());
+
     const minifiedContents = minifyHtml.minify(fileContents, {
       do_not_minify_doctype: true,
       ensure_spec_compliant_unquoted_attribute_values: true,
       keep_spaces_between_attributes: true,
       keep_closing_tags: true,
     });
-    console.log("Minfied Contents: ", minifiedContents.toString());
+
     minifiedHtmlArray.push({
       name: file.name,
       ext: file.ext,
       destinationPath: distPath,
       content: minifiedContents,
     });
-    console.log("Minfied Array: ", minifiedHtmlArray);
   });
 
   jsFilesArray.forEach((file) => {
     const fileContents = readFileSync(file.path);
-    console.log(fileContents.toString());
 
-    const minifiedContents = UglifyJS.minify(fileContents);
+    const minifiedContents = UglifyJS.minify(fileContents.toString());
 
     minifiedJSArray.push({
       name: file.name,
       ext: file.ext,
-      destinationPath: distPath,
-      content: minifiedContents,
+      destinationPath: jsPath,
+      content: minifiedContents.code,
     });
   });
 
@@ -112,14 +113,24 @@ const outputHTMLandJS = () => {
 };
 
 const compileSass = (devBuild) => {
-  const sassCompileString = `sass ${
-    devBuild ? "--watch --style=expanded" : "--style=compressed"
-  } --no-source-map src/scss/globalStyles.scss:dist/css/globalStyles.css src/scss/pages/:dist/css/`;
+  const sassCompileString = `
+    sass ${
+      devBuild ? "--watch --style=expanded" : "--style=compressed"
+    } --no-source-map ${
+      path.resolve(scssPath, 'globalStyles.scss')
+    }:${
+      path.resolve(cssPath, 'globalStyles.css')
+    } ${
+      path.resolve(scssPath, 'pages')
+    }:${
+      path.resolve(cssPath)
+    }`.trim();
   execSync(sassCompileString);
   if (devBuild !== true) {
     exit();
   }
 };
+
 
 module.exports = {
   outputHTMLandJS,
