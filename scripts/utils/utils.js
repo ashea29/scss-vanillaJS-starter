@@ -20,15 +20,24 @@ const findFiles = (sourcePath, filter, outputArray = []) => {
     return;
   }
 
-  const files = readdirSync(sourcePath, { withFileTypes: true });
-  for (const file of files) {
-    const filename = path.resolve(sourcePath, file.name);
-    const fileExtension = path.extname(file.name);
-    if (file.isDirectory()) {
+  const results = readdirSync(sourcePath, { withFileTypes: true });
+  for (const result of results) {
+    const filename = path.resolve(sourcePath, result.name);
+    const fileExtension = path.extname(result.name);
+    if (result.isDirectory()) {
+      const directoryContents = readdirSync(result, { withFileTypes: true })
+
+      outputArray.push({
+        name: result.name,
+        isDirectory: true,
+        contents: directoryContents
+      })
+
       findFiles(filename, filter, outputArray);
     } else if (filename.endsWith(filter)) {
       outputArray.push({
         name: file.name.substring(0, file.name.indexOf(fileExtension)),
+        isFile: true,
         ext: fileExtension,
         path: filename,
       });
@@ -58,8 +67,12 @@ const outputFiles = (htmlArray = [], jsArray = []) => {
 
   if (jsArray && jsArray.length != 0) {
     if (existsSync(`${jsPath}`)) {
-      jsArray.forEach((file) => {
-        writeFileSync(`${jsPath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`, file.content, {});
+      jsArray.forEach((entry) => {
+        if (entry.isFile) {
+          writeFileSync(`${jsPath}${OS === "win32" ? "\\" : "/"}${entry.name}${entry.ext}`, entry.content, {});
+        } else if (entry.isDirectory) {
+          
+        }
       });
     } else {
       execSync(`mkdir ${jsPath}`);
