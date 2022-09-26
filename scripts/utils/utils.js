@@ -28,29 +28,30 @@ const findFiles = (sourcePath, filter, outputArray = []) => {
   }
 
   const results = readdirSync(sourcePath, { withFileTypes: true });
-  console.log("Results: ", results);
+
   for (const result of results) {
     const resultPath = path.resolve(sourcePath, result.name);
-    console.log("Result Path: ", resultPath);
-    let fileExtension = path.extname(result.name);
-    // if (!result.isDirectory()) {
-    //   fileExtension = path.extname(result.name);
-    // }
+    const fileExtension = path.extname(result.name);
+
     if (result.isDirectory()) {
       const directoryContents = readdirSync(resultPath, {
         withFileTypes: true,
       });
-      console.log("isDirectory Contents: ", directoryContents);
-      outputArray.push({
-        result: { ...result },
-        isDirectory: true,
-        path: resultPath,
-        files: [...directoryContents],
-        // dirContents:
-      });
+      directoryContents.forEach((entry) => {
+        const entryPath = path.resolve(resultPath, entry.name)
+        const basename = path.basename(entryPath)
+        const fileExtension = path.extname(entry.name)
 
-      findFiles(resultPath, filter, outputArray);
-      // findFiles(sourcePath, filter, outputArray);
+        if (!entry.isDirectory()) {
+          outputArray.push({
+            name: entry.name.substring(0, entry.name.indexOf(fileExtension)),
+            isFile: true,
+            path: entryPath,
+            parentDir: entryPath.substring(0, entryPath.indexOf(basename)),
+            ext: fileExtension
+          })
+        }
+      })
     } else if (!result.isDirectory() && resultPath.endsWith(filter)) {
       outputArray.push({
         name: result.name.substring(0, result.name.indexOf(fileExtension)),
@@ -83,41 +84,34 @@ const outputFiles = (htmlArray = [], jsArray = []) => {
   }
 
   if (jsArray && jsArray.length != 0) {
-    if (existsSync(`${jsPath}`)) {
-      jsArray.forEach((entry) => {
-        if (entry.isFile) {
-          writeFileSync(
-            `${jsPath}${OS === "win32" ? "\\" : "/"}${entry.name}${entry.ext}`,
-            entry.content,
-            {}
-          );
-        } else if (entry.isDirectory) {
-          execSync(
-            `mkdir ${jsPath}${OS === "win32" ? "\\" : "/"}${entry.name}`
-          );
-
-          entry.dirContents.forEach(() => {});
-        }
-      });
-    } else {
+    if (!existsSync(`${jsPath}`)) {
       execSync(`mkdir ${jsPath}`);
-      jsArray.forEach((file) => {
+    }
+    jsArray.forEach((entry) => {
+      if (!entry.parentDir) {
         writeFileSync(
-          `${jsPath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
-          file.content,
+          `${jsPath}${OS === "win32" ? "\\" : "/"}${entry.name}${entry.ext}`,
+          entry.content,
           {}
         );
-      });
-    }
+      } else if (entry.parentDir) {
+        const entryBasename = path.basename(entry.parentDir)
+        execSync(
+          `mkdir ${jsPath}${OS === "win32" ? "\\" : "/"}${entryBasename}`
+        );
+        writeFileSync(
+          `${jsPath}${OS === "win32" ? "\\" : "/"}${entryBasename}${OS === "win32" ? "\\" : "/"}${entry.name}${entry.ext}`,
+          entry.content,
+          {}
+        );
+      }
+    });
   }
 };
 
 const outputHTMLandJS = () => {
   const htmlFilesArray = [];
   const jsEntriesArray = [];
-  const jsSubdirContents = [];
-  const jsSubdirs = [];
-  const jsSubdirFiles = [];
   const minifiedHtmlArray = [];
   const minifiedJSArray = [];
   findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
@@ -129,20 +123,30 @@ const outputHTMLandJS = () => {
     let contentsWithScriptTag;
 
     if (jsEntriesArray.length !== 0) {
-      const matchingJsFile = jsEntriesArray.find(
-        (jsFile) => !jsFile.isDirectory && jsFile.name === file.name
+      const matchingJsEntry = jsEntriesArray.find(
+        (jsEntry) => jsEntry.parentDir ? path.basename(jsEntry.parentDir) === file.name : jsEntry.name === file.name
       );
-      const scriptTag = `\t<script src="./js/${matchingJsFile.name}.js"></script>`;
-      const lines = fileContents.toString().split(OS === "win32" ? "\r" : "\n");
-      lines.splice(lines.length - 2, 0, scriptTag);
-      contentsWithScriptTag = lines.join(OS === "win32" ? "\r" : "\n");
 
-      minifiedContents = minifyHtml.minify(Buffer.from(contentsWithScriptTag), {
-        do_not_minify_doctype: true,
-        ensure_spec_compliant_unquoted_attribute_values: true,
-        keep_spaces_between_attributes: true,
-        keep_closing_tags: true,
-      });
+      if (matchingJsEntry) {
+        const scriptTag = `\t<script src="./js/${matchingJsEntry.parentDir ? path.basename(matchingJsEntry.parentDir)+'/' : ''}${matchingJsEntry.name}.js"></script>`;
+        const lines = fileContents.toString().split(OS === "win32" ? "\r" : "\n");
+        lines.splice(lines.length - 2, 0, scriptTag);
+        contentsWithScriptTag = lines.join(OS === "win32" ? "\r" : "\n");
+  
+        minifiedContents = minifyHtml.minify(Buffer.from(contentsWithScriptTag), {
+          do_not_minify_doctype: true,
+          ensure_spec_compliant_unquoted_attribute_values: true,
+          keep_spaces_between_attributes: true,
+          keep_closing_tags: true,
+        });
+      } else {
+        minifiedContents = minifyHtml.minify(fileContents, {
+          do_not_minify_doctype: true,
+          ensure_spec_compliant_unquoted_attribute_values: true,
+          keep_spaces_between_attributes: true,
+          keep_closing_tags: true,
+        });
+      }
     } else {
       minifiedContents = minifyHtml.minify(fileContents, {
         do_not_minify_doctype: true,
@@ -161,38 +165,27 @@ const outputHTMLandJS = () => {
   });
 
   if (jsEntriesArray.length != 0) {
-    console.log("JS Entries Array: ", jsEntriesArray);
     jsEntriesArray.forEach((entry) => {
-      if (entry.isDirectory) {
-        console.log(entry.files);
+      const fileContents = readFileSync(entry.path);
+      const minifiedContents = UglifyJS.minify(fileContents.toString());
+      if (entry.parentDir) {
+        minifiedJSArray.push({
+          name: entry.name,
+          ext: entry.ext,
+          destinationPath: path.resolve(jsPath, path.basename(entry.parentDir)),
+          parentDir: entry.parentDir,
+          content: minifiedContents.code,
+        });
+      } else {
+        minifiedJSArray.push({
+          name: entry.name,
+          ext: entry.ext,
+          destinationPath: jsPath,
+          content: minifiedContents.code,
+        });
       }
-    });
-    // jsEntriesArray.forEach((entry) => {
-    //   if (entry.isDirectory) {
-    //     // const contentsArr = entry.dirContents;
-    //     jsSubdirFiles.push({
-    //       ...entry.dirContents,
-    //     });
-    //     console.log("Dir contents: ", jsSubdirFiles);
-    //   } else if (entry.isFile) {
-    //     const fileContents = readFileSync(entry.path);
-
-    //     const minifiedContents = UglifyJS.minify(fileContents.toString());
-
-    //     minifiedJSArray.push({
-    //       name: entry.name,
-    //       ext: entry.ext,
-    //       destinationPath: jsPath,
-    //       content: minifiedContents.code,
-    //     });
-    //   }
-    // });
-
-    // jsSubdirContents.forEach((entry) => {
-    //   const jsFiles = [];
-    //   jsSubdirFiles.push({});
-    // });
-    // outputFiles(minifiedHtmlArray, minifiedJSArray);
+    })
+    outputFiles(minifiedHtmlArray, minifiedJSArray)
   } else {
     outputFiles(minifiedHtmlArray);
   }
