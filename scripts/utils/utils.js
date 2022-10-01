@@ -110,17 +110,28 @@ const outputFiles = (htmlArray = [], jsArray = []) => {
 };
 
 const outputHTMLandJS = () => {
-  const htmlFilesArray = [];
-  const jsEntriesArray = [];
-  const minifiedHtmlArray = [];
-  const minifiedJSArray = [];
-  findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
-  findFiles(`${rootDir}/src/js`, ".js", jsEntriesArray);
+  const htmlFilesArray = []
+  const jsEntriesArray = []
+  const minifiedHtmlArray = []
+  const minifiedJSArray = []
+  findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray)
+  findFiles(`${rootDir}/src/js`, ".js", jsEntriesArray)
 
   htmlFilesArray.forEach((file) => {
-    const fileContents = readFileSync(file.path);
-    let minifiedContents;
-    let contentsWithScriptTag;
+    const fileContents = readFileSync(file.path)
+    let minifiedContents
+    let contentsWithStyles
+    let contentsWithStylesAndJS
+
+    let lines = fileContents.toString().split(OS === "win32" ? "\r" : "\n");
+    const globalCSSLink = '\t<link rel="stylesheet" href="css/globalStyles.css">'
+    const mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name}.css">`
+    const injectStylesIndex = lines.findIndex((line) => line.includes('</title>'))
+
+    lines.splice(injectStylesIndex, 0, globalCSSLink)
+    lines.splice(injectStylesIndex + 1, 0, mainCSSLink)
+
+    contentsWithStyles = lines.join(OS === "win32" ? "\r" : "\n")
 
     if (jsEntriesArray.length !== 0) {
       const matchingJsEntry = jsEntriesArray.find(
@@ -129,18 +140,19 @@ const outputHTMLandJS = () => {
 
       if (matchingJsEntry) {
         const scriptTag = `\t<script src="./js/${matchingJsEntry.parentDir ? path.basename(matchingJsEntry.parentDir)+'/' : ''}${matchingJsEntry.name}.js"></script>`;
-        const lines = fileContents.toString().split(OS === "win32" ? "\r" : "\n");
+
+        lines = contentsWithStyles.toString().split(OS === "win32" ? "\r" : "\n")
         lines.splice(lines.length - 2, 0, scriptTag);
-        contentsWithScriptTag = lines.join(OS === "win32" ? "\r" : "\n");
+        contentsWithStylesAndJS = lines.join(OS === "win32" ? "\r" : "\n");
   
-        minifiedContents = minifyHtml.minify(Buffer.from(contentsWithScriptTag), {
+        minifiedContents = minifyHtml.minify(Buffer.from(contentsWithStylesAndJS), {
           do_not_minify_doctype: true,
           ensure_spec_compliant_unquoted_attribute_values: true,
           keep_spaces_between_attributes: true,
           keep_closing_tags: true,
         });
       } else {
-        minifiedContents = minifyHtml.minify(fileContents, {
+        minifiedContents = minifyHtml.minify(Buffer.from(contentsWithStyles), {
           do_not_minify_doctype: true,
           ensure_spec_compliant_unquoted_attribute_values: true,
           keep_spaces_between_attributes: true,
@@ -148,7 +160,7 @@ const outputHTMLandJS = () => {
         });
       }
     } else {
-      minifiedContents = minifyHtml.minify(fileContents, {
+      minifiedContents = minifyHtml.minify(Buffer.from(contentsWithStyles), {
         do_not_minify_doctype: true,
         ensure_spec_compliant_unquoted_attribute_values: true,
         keep_spaces_between_attributes: true,

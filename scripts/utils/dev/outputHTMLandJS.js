@@ -16,7 +16,16 @@ const outputHTMLandJS = () => {
 
   htmlFilesArray.forEach((file) => {
     const fileContents = readFileSync(file.path);
-    let contentsWithScriptTag;
+    let contentsWithStyles
+    let contentsWithStylesAndJS
+
+    const globalCSSLink = '\t<link rel="stylesheet" href="css/globalStyles.css">'
+    const mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name}.css">`
+    const lines = fileContents.toString().split(OS === "win32" ? "\r" : "\n");
+    const injectStylesIndex = lines.findIndex((line) => line.includes('</title>'))
+
+    lines.splice(injectStylesIndex, 0, globalCSSLink)
+    lines.splice(injectStylesIndex + 1, 0, mainCSSLink)
 
     if (jsEntriesArray.length !== 0) {
       const matchingJsEntry = jsEntriesArray.find(
@@ -25,23 +34,25 @@ const outputHTMLandJS = () => {
 
       if (matchingJsEntry) {
         const scriptTag = `\t<script src="./js/${matchingJsEntry.parentDir ? path.basename(matchingJsEntry.parentDir)+'/' : ''}${matchingJsEntry.name}.js"></script>`;
-        const lines = fileContents.toString().split(OS === "win32" ? "\r" : "\n");
-        lines.splice(lines.length - 2, 0, scriptTag);
-        contentsWithScriptTag = lines.join(OS === "win32" ? "\r" : "\n");
+
+        lines.splice(lines.length - 2, 0, scriptTag)
+        contentsWithStylesAndJS = lines.join(OS === "win32" ? "\r" : "\n")
   
         htmlOutputArray.push({
           name: file.name,
           ext: file.ext,
           destinationPath: htmlPath,
-          content: contentsWithScriptTag,
+          content: contentsWithStylesAndJS,
         });
       } 
     } else {
+      contentsWithStyles = lines.join(OS === "win32" ? "\r" : "\n")
+
       htmlOutputArray.push({
         name: file.name,
         ext: file.ext,
         destinationPath: htmlPath,
-        content: fileContents,
+        content: contentsWithStyles,
       });
     }
   });
