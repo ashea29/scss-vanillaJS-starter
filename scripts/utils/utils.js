@@ -11,6 +11,7 @@ const { platform } = require("os");
 const {
   rootDir,
   distPath,
+  assetSrcPath,
   htmlPath,
   jsPath,
   cssPath,
@@ -106,6 +107,18 @@ const outputFiles = (htmlArray = [], jsArray = []) => {
         );
       }
     });
+  }
+
+  if (existsSync(assetSrcPath)) {
+    const assetOutputPath = `${distPath}${OS === "win32" ? "\\" : "/"}assets${OS === "win32" ? "\\" : "/"}`
+    if (!existsSync(assetOutputPath)) {
+      execSync(
+        `mkdir ${distPath}${OS === "win32" ? "\\" : "/"}assets${OS === "win32" ? "\\" : "/"}`
+      );
+    } 
+    execSync(
+      `${OS === "win32" ? "copy" : "cp"} ${assetSrcPath} ${distPath}${OS === "win32" ? "\\" : "/"}assets${OS === "win32" ? "\\" : "/"}`
+    );
   }
 };
 
