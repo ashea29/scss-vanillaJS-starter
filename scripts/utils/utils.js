@@ -97,9 +97,13 @@ const outputFiles = (htmlArray = [], jsArray = []) => {
         );
       } else if (entry.parentDir) {
         const entryBasename = path.basename(entry.parentDir)
-        execSync(
-          `mkdir ${jsPath}${OS === "win32" ? "\\" : "/"}${entryBasename}`
-        );
+
+        if (!existsSync(`${jsPath}${OS === "win32" ? "\\" : "/"}${entryBasename}`)){
+          execSync(
+            `mkdir ${jsPath}${OS === "win32" ? "\\" : "/"}${entryBasename}`
+          );
+        }
+        
         writeFileSync(
           `${jsPath}${OS === "win32" ? "\\" : "/"}${entryBasename}${OS === "win32" ? "\\" : "/"}${entry.name}${entry.ext}`,
           entry.content,
