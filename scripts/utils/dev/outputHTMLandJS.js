@@ -1,7 +1,7 @@
 const path = require("path");
-const { readFileSync } = require("node:fs");
+const { readFileSync, readdirSync } = require("node:fs");
 const { platform } = require("os");
-const { rootDir, jsPath, htmlPath } = require('../paths')
+const { rootDir, jsPath, htmlPath, scssPath } = require('../paths')
 const { findFiles, outputFiles } = require('../utils')
 
 const OS = platform()
@@ -14,13 +14,30 @@ const outputHTMLandJS = () => {
   findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray);
   findFiles(`${rootDir}/src/js`, ".js", jsEntriesArray);
 
+  const pageStylesDir = readdirSync(path.resolve(scssPath, 'pages'), { withFileTypes: true })
+
   htmlFilesArray.forEach((file) => {
     const fileContents = readFileSync(file.path);
+
+    const matchingPageStyle = pageStylesDir.find(
+      (item) => item.name.includes(
+        file.name === "index" 
+        ? "home" 
+        : file.name
+      )
+    )
+
+    let mainCSSLink
     let contentsWithStyles
     let contentsWithStylesAndJS
 
     const globalCSSLink = '\t<link rel="stylesheet" href="css/globalStyles.css">'
-    const mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name}.css">`
+
+    if (matchingPageStyle.isDirectory()) {
+      mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name === "index" ? "home" : file.name}/index.css">`
+    } else {
+      mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name}.css">`
+    }
     const lines = fileContents.toString().split(OS === "win32" ? "\r" : "\n");
     const injectStylesIndex = lines.findIndex((line) => line.includes('</title>'))
 
@@ -44,7 +61,16 @@ const outputHTMLandJS = () => {
           destinationPath: htmlPath,
           content: contentsWithStylesAndJS,
         });
-      } 
+      } else {
+        contentsWithStyles = lines.join(OS === "win32" ? "\r" : "\n")
+
+        htmlOutputArray.push({
+          name: file.name,
+          ext: file.ext,
+          destinationPath: htmlPath,
+          content: contentsWithStyles,
+        });
+      }
     } else {
       contentsWithStyles = lines.join(OS === "win32" ? "\r" : "\n")
 
