@@ -103,7 +103,7 @@ const outputFiles = (htmlArray = [], jsArray = []) => {
             `mkdir ${jsPath}${OS === "win32" ? "\\" : "/"}${entryBasename}`
           );
         }
-        
+
         writeFileSync(
           `${jsPath}${OS === "win32" ? "\\" : "/"}${entryBasename}${OS === "win32" ? "\\" : "/"}${entry.name}${entry.ext}`,
           entry.content,
@@ -134,15 +134,33 @@ const outputHTMLandJS = () => {
   findFiles(`${rootDir}/src/pages`, ".html", htmlFilesArray)
   findFiles(`${rootDir}/src/js`, ".js", jsEntriesArray)
 
+  const pageStylesDir = readdirSync(path.resolve(scssPath, 'pages'), { withFileTypes: true })
+
   htmlFilesArray.forEach((file) => {
     const fileContents = readFileSync(file.path)
+
+    const matchingPageStyle = pageStylesDir.find(
+      (item) => item.name.includes(
+        file.name === "index" 
+        ? "home" 
+        : file.name
+      )
+    )
+
+    let mainCSSLink
     let minifiedContents
     let contentsWithStyles
     let contentsWithStylesAndJS
 
     let lines = fileContents.toString().split(OS === "win32" ? "\r" : "\n");
     const globalCSSLink = '\t<link rel="stylesheet" href="css/globalStyles.css">'
-    const mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name}.css">`
+
+    if (matchingPageStyle.isDirectory()) {
+      mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name === "index" ? "home" : file.name}/index.css">`
+    } else {
+      mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name}.css">`
+    }
+    
     const injectStylesIndex = lines.findIndex((line) => line.includes('</title>'))
 
     lines.splice(injectStylesIndex, 0, globalCSSLink)
