@@ -1,3 +1,6 @@
+@use './index-imports' as *;
+
+
 h1 {
-  color: steelblue;
+  color: $primary-color;
 }

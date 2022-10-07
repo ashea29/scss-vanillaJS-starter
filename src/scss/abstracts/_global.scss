@@ -1,0 +1,18 @@
+@use './global-imports' as *;
+
+
+@mixin globalStyles--main {
+  // Padding & margin reset, box-sizing 
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    @include background;
+    background: $primary-color;
+    color: set-text-color($primary-color);
+    font-family: $default-font;
+  }
+}
