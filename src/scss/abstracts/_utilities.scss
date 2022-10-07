@@ -1,254 +1,139 @@
 // Utility styles
 
-.container {
-  margin: 0 auto;
-  padding: 0 2rem;
-  overflow: auto;
 
-  @media (min-width: 600px) {
-    & {
-      width: 80%;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      overflow: auto;
+@mixin globalStyles--utility {
+  .container {
+    margin: 0 auto;
+    padding: 0 2rem;
+    overflow: auto;
+  
+    @media (min-width: 600px) {
+      & {
+        width: 85%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0;
+        overflow: visible;
+      }
     }
   }
-}
-
-
-.flex-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-}
-
-@mixin flex-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-@mixin flex-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
-
-// Margin and Padding classes
-$space-amounts: (1,2,3,4,5);
-
-@each $space in $space-amounts {
-  .m-#{$space} {
-    margin: #{$space}rem;
+  
+  .flex-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .my-#{$space} {
-    margin-top: #{$space}rem;
-    margin-bottom: #{$space}rem;
+  
+  .flex-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
   }
-  .mx-#{$space} {
-    margin-left: #{$space}rem;
-    margin-right: #{$space}rem;
-  }
-  .ml-#{$space} {
-    margin-left: #{$space}rem;
-  }
-  .mr-#{$space} {
-    margin-right: #{$space}rem;
-  }
-  .mt-#{$space} {
-    margin-top: #{$space}rem;
-  }
-  .mb-#{$space} {
-    margin-bottom: #{$space}rem;
-  }
-
-  .p-#{$space} {
-    padding: #{$space}rem;
-  }
-  .py-#{$space} {
-    padding-top: #{$space}rem;
-    padding-bottom: #{$space}rem;
-  }
-  .px-#{$space} {
-    padding-left: #{$space}rem;
-    padding-right: #{$space}rem;
-  }
-  .pl-#{$space} {
-    padding-left: #{$space}rem;
-  }
-  .pr-#{$space} {
-    padding-right: #{$space}rem;
-  }
-  .pt-#{$space} {
-    padding-top: #{$space}rem;
-  }
-  .pb-#{$space} {
-    padding-bottom: #{$space}rem;
-  }
-}
-
-.my-auto {
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.ml-auto {
-  margin-left: auto;
-}
-
-.mr-auto {
-  margin-right: auto;
-}
-
-.mt-auto {
-  margin-top: auto;
-}
-
-.mb-auto {
-  margin-bottom: auto;
-}
-
-.py-auto {
-  padding-top: auto;
-  padding-bottom: auto;
-}
-
-.px-auto {
-  padding-left: auto;
-  padding-right: auto;
-}
-
-.pl-auto {
-  padding-left: auto;
-}
-
-.pr-auto {
-  padding-right: auto;
-}
-
-.pt-auto {
-  padding-top: auto;
-}
-
-.pb-auto {
-  padding-bottom: auto;
-}
-
-
-//MEDIA QUERY MIXINS
-
-//Extra-small screen (mobile)
-@mixin mediaXs {
-  @media screen and (max-width: 300px) {
-    @content;
-  }
-}
-
-
-//Small screen
-@mixin mediaSm {
-  @media screen and (min-width: 301px) and (max-width: 600px) {
-    @content;
-  }
-}
-
-@mixin mediaSmDown {
-  @media screen and (max-width: 600px) {
-    @content;
-  }
-}
-
-@mixin mediaSmUp {
-  @media screen and (min-width: 301px) {
-    @content;
-  }
-}
-
-
-//Medium screen
-@mixin mediaMd {
-  @media screen and (min-width: 601px) and (max-width: 900px) {
-    @content;
-  }
-}
-
-@mixin mediaMdDowm {
-  @media screen and (max-width: 900px) {
-    @content;
-  }
-}
-
-@mixin mediaMdUp {
-  @media screen and (min-width: 601px) {
-    @content;
-  }
-}
-
-
-//Large screen
-@mixin mediaLg {
-  @media screen and (min-width: 901px) and (max-width: 1100px) {
-    @content;
-  }
-}
-
-@mixin mediaLgDown {
-  @media screen and (max-width: 1100px) {
-    @content;
-  }
-}
-
-@mixin mediaLgUp {
-  @media screen and (min-width: 901px) {
-    @content;
-  }
-}
-
-
-//Extra-large screen
-@mixin mediaXl {
-  @media screen and (min-width: 1101px) {
-    @content;
-  }
-}
-
-
-//Custom
-@mixin mediaCustomUp ($minWidth) {
-    @media screen and (min-width: $minWidth) {
-        @content;
+  
+  
+  // Margin and Padding classes
+  $space-amounts: (1,2,3,4,5);
+  
+  @each $space in $space-amounts {
+    .m-#{$space} {
+      margin: #{$space}rem;
     }
-}
-
-@mixin mediaCustomDown ($maxWidth) {
-    @media screen and (max-width: $maxWidth) {
-        @content;
+    .my-#{$space} {
+      margin-top: #{$space}rem;
+      margin-bottom: #{$space}rem;
     }
-}
-
-@mixin mediaCustomRange ($minWidth, $maxWidth) {
-    @media screen and (min-width: $minWidth) and (max-width: $maxWidth) {
-        @content;
+    .mx-#{$space} {
+      margin-left: #{$space}rem;
+      margin-right: #{$space}rem;
     }
-}
-
-@mixin mediaMaxHeight ($maxHeight) {
-    @media screen and (max-height: $maxHeight) {
-        @content;
+    .ml-#{$space} {
+      margin-left: #{$space}rem;
     }
+    .mr-#{$space} {
+      margin-right: #{$space}rem;
+    }
+    .mt-#{$space} {
+      margin-top: #{$space}rem;
+    }
+    .mb-#{$space} {
+      margin-bottom: #{$space}rem;
+    }
+  
+    .p-#{$space} {
+      padding: #{$space}rem;
+    }
+    .py-#{$space} {
+      padding-top: #{$space}rem;
+      padding-bottom: #{$space}rem;
+    }
+    .px-#{$space} {
+      padding-left: #{$space}rem;
+      padding-right: #{$space}rem;
+    }
+    .pl-#{$space} {
+      padding-left: #{$space}rem;
+    }
+    .pr-#{$space} {
+      padding-right: #{$space}rem;
+    }
+    .pt-#{$space} {
+      padding-top: #{$space}rem;
+    }
+    .pb-#{$space} {
+      padding-bottom: #{$space}rem;
+    }
+  }
+  
+  .my-auto {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+  
+  .mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .ml-auto {
+    margin-left: auto;
+  }
+  
+  .mr-auto {
+    margin-right: auto;
+  }
+  
+  .mt-auto {
+    margin-top: auto;
+  }
+  
+  .mb-auto {
+    margin-bottom: auto;
+  }
+  
+  .py-auto {
+    padding-top: auto;
+    padding-bottom: auto;
+  }
+  
+  .px-auto {
+    padding-left: auto;
+    padding-right: auto;
+  }
+  
+  .pl-auto {
+    padding-left: auto;
+  }
+  
+  .pr-auto {
+    padding-right: auto;
+  }
+  
+  .pt-auto {
+    padding-top: auto;
+  }
+  
+  .pb-auto {
+    padding-bottom: auto;
+  }
 }
