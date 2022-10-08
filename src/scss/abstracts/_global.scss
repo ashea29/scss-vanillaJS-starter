@@ -10,9 +10,8 @@
   }
   
   body {
-    @include background;
-    background: $primary-color;
-    color: set-text-color($primary-color);
+    background: #fff;
+    color: #000;
     font-family: $default-font;
   }
 }

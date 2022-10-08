@@ -22,6 +22,7 @@ const UglifyJS = require("uglify-js");
 
 const OS = platform();
 
+
 const findFiles = (sourcePath, filter, outputArray = []) => {
   if (!existsSync(sourcePath)) {
     console.log("No directory at this path", sourcePath);
@@ -126,7 +127,8 @@ const outputFiles = (htmlArray = [], jsArray = []) => {
   }
 };
 
-const outputHTMLandJS = () => {
+
+const outputHTMLandJS = (cssArray) => {
   const htmlFilesArray = []
   const jsEntriesArray = []
   const minifiedHtmlArray = []
@@ -142,11 +144,14 @@ const outputHTMLandJS = () => {
     const matchingPageStyle = pageStylesDir.find(
       (item) => item.name.includes(
         file.name === "index" 
-        ? "home" 
+        ? item.name.includes('home') 
+          ? "home"
+          : "index"
         : file.name
       )
     )
 
+    let fileExtension
     let mainCSSLink
     let minifiedContents
     let contentsWithStyles
@@ -155,16 +160,41 @@ const outputHTMLandJS = () => {
     let lines = fileContents.toString().split(OS === "win32" ? "\r" : "\n");
     const globalCSSLink = '\t<link rel="stylesheet" href="css/globalStyles.css">'
 
-    if (matchingPageStyle.isDirectory()) {
+    if (matchingPageStyle && matchingPageStyle.isDirectory()) {
+      cssArray.push(
+        `${
+          path.resolve(scssPath, "pages", matchingPageStyle.name)
+        }${
+          OS === "win32" ? "\\" : "/"
+        }index.scss:${
+          path.resolve(cssPath, `${matchingPageStyle.name}`)
+        }${
+          OS === "win32" ? "\\" : "/"
+        }index.css`.trim()
+      )
+
       mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name === "index" ? "home" : file.name}/index.css">`
-    } else {
-      mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name}.css">`
+    } else if (matchingPageStyle && !matchingPageStyle.isDirectory()) {
+      fileExtension = path.extname(matchingPageStyle.name)
+
+      cssArray.push(
+        `${
+         path.resolve(scssPath, "pages", `${matchingPageStyle.name.substring(0, matchingPageStyle.name.indexOf(fileExtension))}.scss` ) 
+        }:${
+          path.resolve(cssPath, `${matchingPageStyle.name.substring(0, matchingPageStyle.name.indexOf(fileExtension))}.css`) 
+        }`.trim()
+      )
+
+      mainCSSLink = `\t<link rel="stylesheet" href="css/${matchingPageStyle.name.substring(0, matchingPageStyle.name.indexOf(fileExtension))}.css">`
     }
     
     const injectStylesIndex = lines.findIndex((line) => line.includes('</title>'))
 
     lines.splice(injectStylesIndex, 0, globalCSSLink)
-    lines.splice(injectStylesIndex + 1, 0, mainCSSLink)
+
+    if (mainCSSLink) {
+      lines.splice(injectStylesIndex + 1, 0, mainCSSLink)
+    }
 
     contentsWithStyles = lines.join(OS === "win32" ? "\r" : "\n")
 
@@ -238,15 +268,15 @@ const outputHTMLandJS = () => {
   }
 };
 
-const compileSass = () => {
+const compileSass = (cssArray) => {
   const sassCompileString = `
-    sass --style=compressed --no-source-map ${path.resolve(
-      scssPath,
-      "globalStyles.scss"
-    )}:${path.resolve(cssPath, "globalStyles.css")} ${path.resolve(
-    scssPath,
-    "pages"
-  )}:${path.resolve(cssPath)}`.trim();
+    sass --style=compressed --no-source-map ${
+      path.resolve(scssPath, 'globalStyles.scss')
+    }:${
+      path.resolve(cssPath, 'globalStyles.css')
+    } ${
+      cssArray.join(' ')
+    }`.trim();
   execSync(sassCompileString);
 };
 
