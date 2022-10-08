@@ -1,1 +1,6 @@
 @use './abstracts' as *;
+
+
+@include globalStyles--main;
+@include globalStyles--utility;
+@include globalStyles--responsive;
