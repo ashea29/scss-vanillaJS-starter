@@ -12,6 +12,9 @@ program
 program.parse(argv);
 const build = program.opts();
 
+
+const cssOutputArray = []
+
 if (build.dev) {
   concurrently([
     'nodemon ./scripts/utils/dev/outputHTMLandJS.js', 'node ./scripts/utils/dev/compileSass.js', 'node ./scripts/dev.js'
@@ -19,6 +22,6 @@ if (build.dev) {
 }
 
 if (build.prod) {
-  outputHTMLandJS();
-  compileSass();
+  outputHTMLandJS(cssOutputArray);
+  compileSass(cssOutputArray);
 }
