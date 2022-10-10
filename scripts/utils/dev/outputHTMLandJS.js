@@ -42,9 +42,13 @@ const outputHTMLandJS = (cssArray) => {
       cssArray.push(
         `${
           path.resolve(scssPath, "pages", matchingPageStyle.name)
-        }/index.scss:${
+        }${
+          OS === "win32" ? "\\" : "/"
+        }index.scss:${
           path.resolve(cssPath, `${matchingPageStyle.name}`)
-        }/index.css`
+        }${
+          OS === "win32" ? "\\" : "/"
+        }index.css`.trim()
       )
 
       mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name === "index" ? "home" : file.name}/index.css">`
