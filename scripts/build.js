@@ -1,7 +1,7 @@
 const { argv } = require("node:process");
 const { Command } = require("commander");
 const concurrently = require('concurrently');
-const { outputHTMLandJS, compileSass } = require("./utils/utils");
+const { outputHTMLandJS, compileSass } = require("./utils");
 
 const program = new Command();
 
