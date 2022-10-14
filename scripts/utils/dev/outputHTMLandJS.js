@@ -2,7 +2,7 @@ const path = require("path");
 const { readFileSync, readdirSync } = require("node:fs");
 const { platform } = require("os");
 const { rootDir, jsPath, htmlPath, scssPath, cssPath } = require('../paths')
-const { findFiles, outputFiles } = require('../utils')
+const { findFiles, outputFiles } = require('..')
 
 const OS = platform()
 
