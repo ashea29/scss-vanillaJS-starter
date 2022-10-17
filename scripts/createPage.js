@@ -1,4 +1,4 @@
-const { argv, exit } = require("node:process");
+const { argv } = require("node:process");
 const path = require("path");
 const { platform } = require("os");
 const { execSync } = require("child_process");
@@ -154,7 +154,7 @@ loadModules()
           if (!existsSync(newJSdir)) {
             execSync(`mkdir ${newJSdir}`)
           }
-          
+
           writeFileSync(
            `${newJSdir}${OS === "win32" ? "\\" : "/"}index.js`,
             `console.log('Hello from "${moduleName[0].toUpperCase() + moduleName.substring(1)}" page index.js!')`,
