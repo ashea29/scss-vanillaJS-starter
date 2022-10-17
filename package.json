@@ -5,7 +5,7 @@
   "scripts": {
     "build": "rm -rf ./dist && node ./scripts/build.js -P",
     "dev": "rm -rf ./dist && node ./scripts/build.js -D",
-    "create-style-module": "node ./scripts/createStyleModule.js"
+    "create-page": "node ./scripts/createPage.js"
   },
   "author": "Andrew Shea",
   "license": "GPL-3.0",

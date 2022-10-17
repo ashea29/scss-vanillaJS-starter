@@ -6,7 +6,7 @@ const {
   existsSync,
   writeFileSync,
 } = require("node:fs");
-const { scssPath } = require('./utils/paths')
+const { scssPath, srcDir } = require('./utils/paths')
 
 const OS = platform();
 
@@ -16,9 +16,15 @@ const moduleName = args[0]
 
 const pageStylesPath = path.resolve(scssPath, "pages")
 const newModulePath = `${pageStylesPath}${OS === "win32" ? "\\" : "/"}${moduleName}`
+const htmlPagesPath = path.resolve(srcDir, "pages")
+const newHtmlPath = `${htmlPagesPath}${OS === "win32" ? "\\" : "/"}${moduleName}.html`
 
 if (!existsSync(pageStylesPath)) {
   execSync(`mkdir ${pageStylesPath}`)
+}
+
+if (!existsSync(htmlPagesPath)) {
+  execSync(`mkdir ${htmlPagesPath}`)
 }
 
 if (moduleName && !existsSync(newModulePath)) {
@@ -29,12 +35,34 @@ if (moduleName && !existsSync(newModulePath)) {
   console.log('Error - Module already exists')
 }
 
-const moduleIndexTemplate = `
+const scssIndexTemplate = `
 @use './main' as *;
 @use './responsive' as *;
 `.trim()
 
-const filesToGenerate = [
+const pageTemplate = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${moduleName[0].toUpperCase() + moduleName.substring(1)}</title>
+</head>
+<body>
+  <header class="header">
+    <h1>${moduleName[0].toUpperCase() + moduleName.substring(1)}</h1>
+  </header>
+
+  <main class="main">
+
+  </main>
+</body>
+</html>
+`.trim()
+
+
+const scssFilesToGenerate = [
   {
     name: '_config',
     ext: '.scss'
@@ -62,7 +90,13 @@ const filesToGenerate = [
 ]
 
 
-filesToGenerate.forEach((file) => {
+writeFileSync(
+  `${newHtmlPath}`,
+  pageTemplate,
+  {}
+)
+
+scssFilesToGenerate.forEach((file) => {
   if (file.name !== 'index') {
     writeFileSync(
       `${newModulePath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
@@ -72,7 +106,7 @@ filesToGenerate.forEach((file) => {
   } else if (file.name === 'index') {
     writeFileSync(
       `${newModulePath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
-      moduleIndexTemplate,
+      scssIndexTemplate,
       {}
     )
   }
