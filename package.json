@@ -4,7 +4,8 @@
   "description": "SCSS Vanilla JS Starter",
   "scripts": {
     "build": "rm -rf ./dist && node ./scripts/build.js -P",
-    "dev": "rm -rf ./dist && node ./scripts/build.js -D"
+    "dev": "rm -rf ./dist && node ./scripts/build.js -D",
+    "create-page": "node ./scripts/createPage.js"
   },
   "author": "Andrew Shea",
   "license": "GPL-3.0",
