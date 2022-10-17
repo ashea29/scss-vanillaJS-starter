@@ -12,7 +12,8 @@ const { scssPath, srcDir } = require('./utils/paths');
 const OS = platform();
 const { Command } = commander
 const args = argv.slice(2)
-const moduleName = args[0]
+const moduleNameIndex = args.findIndex((arg) => !arg.includes('-') && !arg.includes('--'))
+const moduleName = args[moduleNameIndex]
 
 
 const program = new Command();
@@ -93,6 +94,58 @@ const scssFilesToGenerate = [
   }
 ]
 
+const generateFiles = (options, answers, pageTemplate, scssIndexTemplate) => {
+  if (!existsSync(pageStylesPath)) {
+    execSync(`mkdir ${pageStylesPath}`)
+  }
+  
+  if (!existsSync(htmlPagesPath)) {
+    execSync(`mkdir ${htmlPagesPath}`)
+  }
+  
+  if (moduleName && !existsSync(newModulePath)) {
+    execSync(`mkdir ${newModulePath}`)
+  } else if (!moduleName) {
+    console.log('Exiting process without completing... no module name provided')
+  } else if (moduleName && existsSync(newModulePath)) {
+    console.log('Error - Module already exists')
+  }
+
+  writeFileSync(
+    `${newHtmlPath}`,
+    pageTemplate(options, answers),
+    {}
+  )
+
+  if (options.javascript || (answers && answers["JavaScript Preference"])) {
+    if (!existsSync(newJSdir)) {
+      execSync(`mkdir ${newJSdir}`)
+    }
+
+    writeFileSync(
+     `${newJSdir}${OS === "win32" ? "\\" : "/"}index.js`,
+      `console.log('Hello from "${moduleName[0].toUpperCase() + moduleName.substring(1)}" page index.js!')`,
+      {}
+    )
+  }
+
+  scssFilesToGenerate.forEach((file) => {
+    if (file.name !== 'index') {
+      writeFileSync(
+        `${newModulePath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
+        '',
+        {}
+      )
+    } else if (file.name === 'index') {
+      writeFileSync(
+        `${newModulePath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
+        scssIndexTemplate,
+        {}
+      )
+    }
+  })
+}
+
 loadModules()
   .then(() => {
     const scssIndexTemplate = stripIndent(`
@@ -100,7 +153,7 @@ loadModules()
       @use './responsive' as *;
     `).trim()
 
-    const pageTemplate = (answers) => stripIndent(`
+    const pageTemplate = (options, answers) => stripIndent(`
       <!DOCTYPE html>
       <html lang="en">
       <head>
@@ -122,62 +175,23 @@ loadModules()
       </html>
     `).trim()
 
+
     if (!options.javascript || !options.favicon) {
       inquirer.prompt([
         faviconPreference,
         javascriptPreference
       ]).then((answers) => {
-        if (!existsSync(pageStylesPath)) {
-          execSync(`mkdir ${pageStylesPath}`)
-        }
-        
-        if (!existsSync(htmlPagesPath)) {
-          execSync(`mkdir ${htmlPagesPath}`)
-        }
-        
-        if (moduleName && !existsSync(newModulePath)) {
-          execSync(`mkdir ${newModulePath}`)
-        } else if (!moduleName) {
-          console.log('Exiting process without completing... no module name provided')
-        } else if (moduleName && existsSync(newModulePath)) {
-          console.log('Error - Module already exists')
-        }
-
-        writeFileSync(
-          `${newHtmlPath}`,
-          pageTemplate(answers),
-          {}
-        )
-    
-        if (options.javascript || answers["JavaScript Preference"]) {
-
-          if (!existsSync(newJSdir)) {
-            execSync(`mkdir ${newJSdir}`)
-          }
-
-          writeFileSync(
-           `${newJSdir}${OS === "win32" ? "\\" : "/"}index.js`,
-            `console.log('Hello from "${moduleName[0].toUpperCase() + moduleName.substring(1)}" page index.js!')`,
-            {}
-          )
-        }
-
-        scssFilesToGenerate.forEach((file) => {
-          if (file.name !== 'index') {
-            writeFileSync(
-              `${newModulePath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
-              '',
-              {}
-            )
-          } else if (file.name === 'index') {
-            writeFileSync(
-              `${newModulePath}${OS === "win32" ? "\\" : "/"}${file.name}${file.ext}`,
-              scssIndexTemplate,
-              {}
-            )
-          }
-        })
+        generateFiles(options, answers, pageTemplate, scssIndexTemplate)
         console.log(chalk.cyan('All files successfully created.'))
+        if (answers["Favicon Preference"] || options.favicon) {
+          console.log(chalk.magenta("Don't forget to add an \"href\" value for the favicon link!"))
+        }
       }).catch(error => console.log(error))
+    } else {
+      generateFiles(options, null, pageTemplate, scssIndexTemplate)
+      console.log(chalk.cyan('All files successfully created.'))
+      if (options.favicon) {
+        console.log(chalk.magenta("Don't forget to add an \"href\" value for the favicon link!"))
+      }
     }    
   }).catch(error => console.log(error))
