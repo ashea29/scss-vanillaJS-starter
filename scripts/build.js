@@ -13,16 +13,15 @@ program
 program.parse(argv);
 const build = program.opts();
 
-
 const cssOutputArray = []
 
 if (build.dev) {
   concurrently([
-    'nodemon ./scripts/utils/dev/outputHTMLandJS.js', 'yarn:gulp:dev', 'node ./scripts/dev.js'
+    'nodemon ./scripts/utils/dev/outputHTMLandJS.js', 'yarn gulp:dev --dev', 'node ./scripts/dev.js'
   ])
 }
 
 if (build.prod) {
   outputHTMLandJS(cssOutputArray);
-  execSync('yarn gulp:prod');
+  execSync('yarn gulp:prod --prod');
 }
