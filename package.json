@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "SCSS Vanilla JS Starter",
   "scripts": {
-    "build": "set NODE_ENV=production && rm -rf ./dist && node ./scripts/build.js -P",
-    "dev": "set NODE_ENV=development && rm -rf ./dist && node ./scripts/build.js -D",
+    "prod": "rm -rf ./dist && node ./scripts/build.js -P",
+    "dev": "rm -rf ./dist && node ./scripts/build.js -D",
     "gulp:dev": "gulp serve",
     "gulp:prod": "gulp build",
     "create-page": "node ./scripts/createPage.js"

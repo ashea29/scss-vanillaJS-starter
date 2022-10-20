@@ -5,7 +5,22 @@ const gulp = require('gulp')
 const sass = require('gulp-sass')(require('sass'))
 const { cssPath } = require("./scripts/utils/paths");
 
-gulp.task('css_dev', function () {
+const args = process.argv.splice(2)
+let cssOutputStyle
+let joinCharacter
+
+if (args.indexOf('--dev') !== -1) {
+  cssOutputStyle = "expanded"
+  joinCharacter = "\n"
+}
+
+if (args.indexOf('--prod') !== -1) {
+  cssOutputStyle = "compressed"
+  joinCharacter = ""
+}
+
+gulp.task('css', function () {
+  console.log(args)
   const plugins = [
     require('postcss-import'),
     require('autoprefixer')(),
@@ -15,35 +30,20 @@ gulp.task('css_dev', function () {
 
   return gulp.src(['./src/scss/*.scss', './src/scss/pages/**/*.scss'])
     .pipe(sass({ 
-      outputStyle: "expanded"
+      outputStyle: cssOutputStyle
     }).on('error', sass.logError))
     .pipe(postcss(plugins))
     .pipe(gulp.dest('./dist/css'))
 })
 
-gulp.task('css_prod', function () {
-  const plugins = [
-    require('postcss-import'),
-    require('autoprefixer')(),
-    require('postcss-preset-env'),
-    require('postcss-jit-props')(require('open-props'))
-  ]
+gulp.task('modifyGlobalCSS', function (done) {
 
-  return gulp.src(['./src/scss/*.scss', './src/scss/pages/**/*.scss'])
-    .pipe(sass({ 
-      outputStyle: "compressed" 
-    }).on('error', sass.logError))
-    .pipe(postcss(plugins))
-    .pipe(gulp.dest('./dist/css'))
-})
-
-gulp.task('modifyGlobalCSS_dev', function (done) {
   const globalOutputFile = readFileSync(path.resolve(cssPath, 'globalStyles.css'))
   let newGlobalOutputFile
 
   const outputToArray = globalOutputFile.toString().split("\n")
   outputToArray.shift()
-  newGlobalOutputFile = outputToArray.join("\n")
+  newGlobalOutputFile = outputToArray.join(joinCharacter)
 
   writeFileSync(
     path.resolve(cssPath, 'globalStyles.css'),
@@ -54,26 +54,8 @@ gulp.task('modifyGlobalCSS_dev', function (done) {
   done()
 })
 
-gulp.task('modifyGlobalCSS_prod', function (done) {
-  const globalOutputFile = readFileSync(path.resolve(cssPath, 'globalStyles.css'))
-  let newGlobalOutputFile
-
-  const outputToArray = globalOutputFile.toString().split("\n")
-  outputToArray.shift()
-  newGlobalOutputFile = outputToArray.join("")
-
-  writeFileSync(
-    path.resolve(cssPath, 'globalStyles.css'),
-    newGlobalOutputFile,
-    {}
-  )
-
-  done()
-})
-
-gulp.task('serve', gulp.series('css_dev', 'modifyGlobalCSS_dev', function () {
-  console.log(process.env.NODE_ENV)
-  gulp.watch(['./src/scss/*.scss', './src/scss/pages/**/*.scss'], gulp.series('css_dev', 'modifyGlobalCSS_dev'))
+gulp.task('serve', gulp.series('css', 'modifyGlobalCSS', function () {
+  gulp.watch(['./src/scss/*.scss', './src/scss/pages/**/*.scss'], gulp.series('css', 'modifyGlobalCSS'))
 }))
 
-gulp.task('build', gulp.series('css_prod', 'modifyGlobalCSS_prod'))
+gulp.task('build', gulp.series('css', 'modifyGlobalCSS'))
