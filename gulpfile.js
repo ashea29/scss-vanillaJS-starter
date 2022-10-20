@@ -20,7 +20,6 @@ if (args.indexOf('--prod') !== -1) {
 }
 
 gulp.task('css', function () {
-  console.log(args)
   const plugins = [
     require('postcss-import'),
     require('autoprefixer')(),
@@ -37,7 +36,6 @@ gulp.task('css', function () {
 })
 
 gulp.task('modifyGlobalCSS', function (done) {
-
   const globalOutputFile = readFileSync(path.resolve(cssPath, 'globalStyles.css'))
   let newGlobalOutputFile
 
