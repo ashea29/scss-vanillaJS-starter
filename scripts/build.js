@@ -1,7 +1,7 @@
 const { argv } = require("node:process");
 const { Command } = require("commander");
 const concurrently = require('concurrently');
-const { outputHTMLandJS, compileSass } = require("./utils");
+const { outputHTMLandJS } = require("./utils");
 const { execSync } = require("node:child_process");
 
 const program = new Command();
@@ -13,8 +13,6 @@ program
 program.parse(argv);
 const build = program.opts();
 
-const cssOutputArray = []
-
 if (build.dev) {
   concurrently([
     'nodemon ./scripts/utils/dev/outputHTMLandJS.js', 'yarn gulp:dev --dev', 'node ./scripts/dev.js'
@@ -22,6 +20,6 @@ if (build.dev) {
 }
 
 if (build.prod) {
-  outputHTMLandJS(cssOutputArray);
+  outputHTMLandJS();
   execSync('yarn gulp:prod --prod');
 }
