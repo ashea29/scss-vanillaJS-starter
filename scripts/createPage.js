@@ -13,23 +13,23 @@ const OS = platform();
 const { Command } = commander
 const args = argv.slice(2)
 
-const scriptName = path.basename(__filename, '.js')
-  .split(/(?=[A-Z])/)
-  .map(segment => segment.toLowerCase())
-  .join('-')
-
-const moduleNameIndex = args.findIndex((arg) => !arg.includes(scriptName) && !arg.includes('--'))
-const moduleName = args[moduleNameIndex]
-
-
 const program = new Command();
 
 program
   .option("-F, --favicon", "Add favicon link to HTML")
-  .option("-J, --javascript", "Create JS file for page");
+  .option("-J, --javascript", "Create JS file for page");  
+
+const moduleNameIndex = args.findIndex(
+  (arg) => !arg.includes('--') 
+    && !arg.includes('-F') 
+    && !arg.includes('-J')
+)
+
+const moduleName = args[moduleNameIndex]
 
 program.parse(argv);
 const options = program.opts()
+
 
 let inquirer
 let chalk
