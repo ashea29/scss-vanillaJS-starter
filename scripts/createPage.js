@@ -21,8 +21,8 @@ program
 
 const moduleNameIndex = args.findIndex(
   (arg) => !arg.includes('--') 
-    && !arg.includes('-F') 
-    && !arg.includes('-J')
+    && arg !== '-F' 
+    && arg !== '-J'
 )
 
 const moduleName = args[moduleNameIndex]
