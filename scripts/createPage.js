@@ -12,7 +12,13 @@ const { scssPath, srcDir } = require('./utils/paths');
 const OS = platform();
 const { Command } = commander
 const args = argv.slice(2)
-const moduleNameIndex = args.findIndex((arg) => !arg.includes('-') && !arg.includes('--'))
+
+const scriptName = path.basename(__filename, '.js')
+  .split(/(?=[A-Z])/)
+  .map(segment => segment.toLowerCase())
+  .join('-')
+
+const moduleNameIndex = args.findIndex((arg) => !arg.includes(scriptName) && !arg.includes('--'))
 const moduleName = args[moduleNameIndex]
 
 
