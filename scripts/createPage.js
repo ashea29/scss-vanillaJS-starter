@@ -30,7 +30,6 @@ const moduleName = args[moduleNameIndex]
 program.parse(argv);
 const options = program.opts()
 
-
 let inquirer
 let chalk
 let stripIndent
