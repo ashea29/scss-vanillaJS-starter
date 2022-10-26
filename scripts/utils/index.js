@@ -146,7 +146,9 @@ const outputHTMLandJS = (cssArray) => {
         file.name === "index" 
         ? item.name.includes('home') 
           ? "home"
-          : "index"
+          : item.name.includes('main')
+            ? "main"
+            : "index"
         : file.name
       )
     )
@@ -173,7 +175,7 @@ const outputHTMLandJS = (cssArray) => {
         }index.css`.trim()
       )
 
-      mainCSSLink = `\t<link rel="stylesheet" href="css/${file.name === "index" ? "home" : file.name}/index.css">`
+      mainCSSLink = `\t<link rel="stylesheet" href="css/${matchingPageStyle.name}/index.css">`
     } else if (matchingPageStyle && !matchingPageStyle.isDirectory()) {
       fileExtension = path.extname(matchingPageStyle.name)
 
