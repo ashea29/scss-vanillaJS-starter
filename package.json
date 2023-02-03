@@ -19,7 +19,7 @@
     "nodemon": "latest",
     "sass": "1.57.1",
     "strip-indent": "^4.0.0",
-    "uglify-js": "latest"
+    "uglify-js": "3.17.4"
   },
   "devDependencies": {
     "chokidar": "^3.5.3"
