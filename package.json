@@ -10,7 +10,7 @@
   "author": "Andrew Shea",
   "license": "GPL-3.0",
   "dependencies": {
-    "@minify-html/node": "0.10.7",
+    "@minify-html/node": "0.10.8",
     "chalk": "^5.1.2",
     "commander": "latest",
     "concurrently": "latest",
